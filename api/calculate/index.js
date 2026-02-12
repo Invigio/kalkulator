@@ -20,9 +20,14 @@ module.exports = async function (context, req) {
   }
 
   try {
-    const { operation, operands } = req.body;
+    const { operation, operands, a, b } = req.body || {};
+    const inputOperands = Array.isArray(operands) ? operands : null;
+    const legacyOperands = typeof a === 'number' && (typeof b === 'number' || b === null || typeof b === 'undefined')
+      ? [a, b].filter(value => typeof value === 'number')
+      : null;
+    const resolvedOperands = inputOperands || legacyOperands;
 
-    if (!operation || !operands || !Array.isArray(operands)) {
+    if (!operation || !resolvedOperands || !Array.isArray(resolvedOperands)) {
       context.res.status = 400;
       context.res.body = { error: 'Nieprawidłowe dane wejściowe' };
       return;
@@ -32,45 +37,45 @@ module.exports = async function (context, req) {
 
     switch (operation) {
       case 'add':
-        if (operands.length !== 2) {
+        if (resolvedOperands.length !== 2) {
           throw new Error('Operacja dodawania wymaga 2 argumentów');
         }
-        result = calculator.add(operands[0], operands[1]);
+        result = calculator.add(resolvedOperands[0], resolvedOperands[1]);
         break;
 
       case 'subtract':
-        if (operands.length !== 2) {
+        if (resolvedOperands.length !== 2) {
           throw new Error('Operacja odejmowania wymaga 2 argumentów');
         }
-        result = calculator.subtract(operands[0], operands[1]);
+        result = calculator.subtract(resolvedOperands[0], resolvedOperands[1]);
         break;
 
       case 'multiply':
-        if (operands.length !== 2) {
+        if (resolvedOperands.length !== 2) {
           throw new Error('Operacja mnożenia wymaga 2 argumentów');
         }
-        result = calculator.multiply(operands[0], operands[1]);
+        result = calculator.multiply(resolvedOperands[0], resolvedOperands[1]);
         break;
 
       case 'divide':
-        if (operands.length !== 2) {
+        if (resolvedOperands.length !== 2) {
           throw new Error('Operacja dzielenia wymaga 2 argumentów');
         }
-        result = calculator.divide(operands[0], operands[1]);
+        result = calculator.divide(resolvedOperands[0], resolvedOperands[1]);
         break;
 
       case 'power':
-        if (operands.length !== 2) {
+        if (resolvedOperands.length !== 2) {
           throw new Error('Operacja potęgowania wymaga 2 argumentów');
         }
-        result = calculator.power(operands[0], operands[1]);
+        result = calculator.power(resolvedOperands[0], resolvedOperands[1]);
         break;
 
       case 'sqrt':
-        if (operands.length !== 1) {
+        if (resolvedOperands.length !== 1) {
           throw new Error('Operacja pierwiastka wymaga 1 argumentu');
         }
-        result = calculator.sqrt(operands[0]);
+        result = calculator.sqrt(resolvedOperands[0]);
         break;
 
       default:

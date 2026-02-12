@@ -23,7 +23,7 @@ module.exports = async function (context, req) {
     if (req.method === 'GET') {
       const history = calculator.getHistory();
       context.res.status = 200;
-      context.res.body = { history };
+      context.res.body = history;
     } else if (req.method === 'DELETE') {
       calculator.clearHistory();
       context.res.status = 200;
