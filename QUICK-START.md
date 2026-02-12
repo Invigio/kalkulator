@@ -1,329 +1,175 @@
-# 🚀 Szybki Przewodnik - CI/CD
+# 🚀 QUICK START - LAB 3
 
-## 📋 Checklist przed rozpoczęciem
+## Instalacja i Uruchomienie (3 minuty)
 
-- [ ] Zainstalowany Node.js (v18+)
-- [ ] Zainstalowany Git
-- [ ] Konto GitHub
-- [ ] Konto Azure (Free tier wystarczy)
-- [ ] (Opcjonalnie) Konto Azure DevOps
+### 1️⃣ Zainstaluj wszystkie zależności
+```powershell
+npm run install:all
+```
+
+To zainstaluje:
+- Backend dependencies (Express, Jest, Supertest)
+- Frontend dependencies (Sass, Jest, build tools)
+- E2E dependencies (Playwright + browsers)
+
+### 2️⃣ Uruchom Backend
+W **pierwszym terminalu**:
+```powershell
+npm run start:backend
+```
+Backend startuje na: **http://localhost:3000**
+
+### 3️⃣ Zbuduj Frontend
+W **drugim terminalu**:
+```powershell
+npm run build:frontend
+```
+
+### 4️⃣ Uruchom Frontend
+```powershell
+npm run start:frontend
+```
+Frontend dostępny na: **http://localhost:8080**
 
 ---
 
-## ⚡ Quick Commands
+## 🧪 Uruchomienie Testów
 
-### Build lokalny
+### Backend (testy jednostkowe + integracyjne)
 ```powershell
-# Instalacja
+npm run test:backend
+```
+✅ 20+ testów | Calculator logic + API endpoints
+
+### Frontend (testy jednostkowe)
+```powershell
+npm run test:frontend
+```
+✅ 25+ testów | UI logic + API communication
+
+### E2E (end-to-end)
+```powershell
+npm run test:e2e
+```
+✅ 30+ testów | Full user flows (Chrome, Firefox, Safari)
+
+### Wszystkie testy
+```powershell
+npm run test:all
+```
+
+---
+
+## 📊 Struktura Projektu
+
+```
+├── backend/           ← REST API (Node.js + Express)
+├── frontend/          ← Aplikacja kliencka (HTML/CSS/JS)
+├── e2e/               ← Testy E2E (Playwright)
+└── .github/workflows/ ← CI/CD (GitHub Actions)
+```
+
+---
+
+## 🎯 Co Zostało Zrobione
+
+✅ **Backend REST API**
+   - Express server z endpointami: calculate, history
+   - Calculator class z operacjami mathetycznymi
+   - 15+ testów jednostkowych (Jest)
+   - Testy integracyjne API (Supertest)
+
+✅ **Frontend**
+   - HTML + Sass + JavaScript
+   - API client komunikujący się z backendem
+   - Historia obliczeń
+   - Dark/Light theme
+   - 20+ testów jednostkowych (Jest + jsdom)
+
+✅ **Testy E2E**
+   - 30+ testów Playwright
+   - Testy UI, interakcji, przepływów
+   - Multi-browser (Chrome, Firefox, Safari)
+
+✅ **CI/CD z Testami**
+   - GitHub Actions: Backend Tests → Frontend Tests → E2E → Deploy
+   - Azure DevOps: Test Stage (wszystkie testy) → Deploy Stage
+   - Automatyczny deployment po przejściu testów
+
+---
+
+## 🔧 Przydatne Komendy
+
+```powershell
+# Wyczyść node_modules (wszystkie foldery)
+npm run clean
+
+# Zobacz coverage testów backendu
+cd backend && npm run test:coverage
+
+# Uruchom Playwright UI (interaktywne testy)
+cd e2e && npm run test:ui
+
+# Zobacz raport z testów E2E
+cd e2e && npm run test:report
+```
+
+---
+
+## 📦 Deployment
+
+### GitHub Actions
+1. Push code do GitHub
+2. Pipeline automatycznie uruchamia:
+   - Backend tests
+   - Frontend tests + build
+   - E2E tests
+   - Deploy do Azure (jeśli tests pass)
+
+### Azure DevOps
+1. Skonfiguruj project w Azure DevOps
+2. Połącz z GitHub repo
+3. Dodaj Variable Group "AzureSecrets"
+4. Pipeline uruchamia się automatycznie
+
+---
+
+## ❓ Troubleshooting
+
+**Backend nie startuje?**
+```powershell
+cd backend
 npm install
-
-# Pojedyncze kroki
-npm run sass           # SCSS → CSS
-npm run minify:css     # Minifikacja CSS
-npm run minify:js      # Minifikacja JS
-npm run minify:html    # Minifikacja HTML
-
-# Wszystko naraz
-npm run build
-
-# Live preview
-npm run serve          # Otwórz http://localhost:8080
+npm start
 ```
 
-### Git workflow
+**Frontend nie działa?**
 ```powershell
-# Pierwszy raz
-git init
-git add .
-git commit -m "feat: initial commit with CI/CD"
-git remote add origin https://github.com/YOUR-USERNAME/kalkulator-cicd.git
-git push -u origin main
-
-# Kolejne zmiany
-git add .
-git commit -m "feat: twój opis zmiany"
-git push
-```
-
----
-
-## 🐙 GitHub Actions Setup (5 minut)
-
-### 1. Push do GitHub ✅
-```powershell
-git init
-git add .
-git commit -m "initial commit"
-git remote add origin https://github.com/YOUR-USERNAME/kalkulator-cicd.git
-git push -u origin main
-```
-
-### 2. Azure Static Web App ✅
-- Portal: https://portal.azure.com
-- Create → Static Web Apps
-- **Name**: kalkulator-cicd
-- **Plan**: Free
-- **Source**: GitHub (authorize)
-- **Repo**: Wybierz swoje
-- **Branch**: main
-- **App location**: `/dist` ← WAŻNE!
-- **Skip app build**: ✅ true
-
-### 3. GitHub Secret ✅
-- Azure Portal → Static Web App → Manage deployment token → Copy
-- GitHub Repo → Settings → Secrets → Actions → New secret
-- **Name**: `AZURE_STATIC_WEB_APPS_API_TOKEN`
-- **Value**: Wklej token
-- Add secret
-
-### 4. Test ✅
-```powershell
-echo "/* Test */" >> src/styles.scss
-git add .
-git commit -m "test: CI/CD"
-git push
-
-# Sprawdź: GitHub → Actions tab
-```
-
-**GOTOWE!** 🎉 Każdy push automatycznie buduje i deployuje!
-
----
-
-## 🔷 Azure DevOps Setup (10 minut)
-
-### 1. Projekt ✅
-- https://dev.azure.com
-- New project → "Kalkulator-CICD"
-
-### 2. Repo ✅
-**Opcja A - Import z GitHub:**
-- Repos → Import → URL GitHub repo
-
-**Opcja B - Azure Repos:**
-```powershell
-git remote add azure https://dev.azure.com/YOUR-ORG/Kalkulator-CICD/_git/kalkulator-cicd
-git push azure main
-```
-
-### 3. Service Connection ✅
-- Project Settings → Service connections
-- New → Azure Resource Manager
-- Service principal (automatic)
-- Subscription → Wybierz
-- Name: `Azure-Connection`
-- Grant access to all pipelines ✅
-- Save
-
-### 4. Variable Group ✅
-- Pipelines → Library → + Variable group
-- Name: `Azure-Secrets`
-- Add variable:
-  - Name: `AZURE_STATIC_WEB_APPS_API_TOKEN`
-  - Value: Token z Azure Portal
-  - 🔒 Make secret
-- Save
-
-### 5. Pipeline ✅
-- Pipelines → Create Pipeline
-- Azure Repos Git (lub GitHub)
-- Existing YAML: `/azure-pipelines.yml`
-- Run
-
-### 6. Link Variable Group ✅
-- Edit pipeline → Variables → Variable groups
-- Link `Azure-Secrets`
-- Save
-
-### 7. Test ✅
-```powershell
-git add .
-git commit -m "test: Azure DevOps CI/CD"
-git push
-
-# Sprawdź: Pipelines tab
-```
-
-**GOTOWE!** 🎉
-
----
-
-## 📊 Co się dzieje podczas buildu?
-
-### GitHub Actions Pipeline
-```
-1. 📥 Checkout code
-2. 🟢 Setup Node.js 20
-3. 📦 npm ci (instalacja zależności)
-4. 🎨 npm run sass          → SCSS → CSS
-5. 🗜️ npm run minify:css    → Kompresja CSS
-6. 🗜️ npm run minify:js     → Kompresja JS
-7. 🗜️ npm run minify:html   → Kompresja HTML
-8. 📋 npm run copy:config   → Kopiowanie plików
-9. 📊 Build Summary         → Podsumowanie
-10. 🚀 Deploy to Azure      → Publikacja
-
-⏱️ Czas: ~2-3 minuty
-```
-
-### Azure DevOps Pipeline
-```
-Stage 1: Build
-  1. 🟢 Setup Node.js
-  2. 📦 Cache npm packages
-  3. 📦 Install Dependencies
-  4. 🎨 Compile Sass → CSS
-  5. 🗜️ Minify CSS
-  6. 🗜️ Minify JavaScript
-  7. 🗜️ Minify HTML
-  8. 📋 Copy Config
-  9. 📊 Build Summary
-  10. 📤 Publish Artifacts
-
-Stage 2: Deploy
-  1. 📥 Download Artifacts
-  2. 🚀 Deploy to Azure
-  3. ✅ Summary
-
-⏱️ Czas: ~3-4 minuty
-```
-
----
-
-## 🎯 Weryfikacja że działa
-
-### 1. Local build test
-```powershell
-npm run build
-
-# Sprawdź czy pliki istnieją:
-Test-Path dist/index.html          # Should be True
-Test-Path dist/styles.min.css      # Should be True
-Test-Path dist/script.min.js       # Should be True
-
-# Sprawdź rozmiary:
-Get-ChildItem dist/ | Select-Object Name, Length
-```
-
-### 2. GitHub Actions test
-```powershell
-# Zrób zmianę
-echo "/* Test $(Get-Date) */" >> src/styles.scss
-
-# Push
-git add .
-git commit -m "test: verify CI/CD"
-git push
-
-# Sprawdź
-# 1. GitHub → Actions → Zobacz running workflow
-# 2. Kliknij na workflow → Zobacz logi
-# 3. Sprawdź czy wszystkie steps są ✅
-```
-
-### 3. Deployed app test
-```
-1. Otwórz URL aplikacji (z Azure Portal)
-2. Sprawdź DevTools (F12) → Network
-3. Zweryfikuj że ładuje:
-   - styles.min.css
-   - script.min.js
-4. Sprawdź że kalkulator działa
-5. Sprawdź motyw (🌙 → ☀️)
-6. Sprawdź historię
-```
-
----
-
-## 🆘 Najczęstsze problemy
-
-### "npm: command not found"
-```powershell
-# Zainstaluj Node.js z: https://nodejs.org
-# lub przez winget:
-winget install OpenJS.NodeJS
-```
-
-### "AZURE_STATIC_WEB_APPS_API_TOKEN secret not found"
-```
-1. Azure Portal → Static Web App
-2. Manage deployment token → Copy
-3. GitHub → Settings → Secrets → Actions
-4. New secret: AZURE_STATIC_WEB_APPS_API_TOKEN
-```
-
-### "Error: dist folder not found"
-```powershell
-# Najpierw build lokalnie
-npm run build
-
-# Sprawdź czy dist/ istnieje
-Test-Path dist/
-```
-
-### "Sass compilation failed"
-```powershell
-# Reinstall
-Remove-Item -Recurse node_modules
-Remove-Item package-lock.json
+cd frontend
 npm install
-
-# Test
-npm run sass
+npm run build
+# Otwórz frontend/dist/index.html w przeglądarce
 ```
 
----
-
-## 📝 Commit Message Convention
-
-```
-feat: dodanie nowej funkcji
-fix: naprawa buga
-docs: zmiana w dokumentacji
-style: formatowanie, białe znaki
-refactor: refactoring kodu
-test: dodanie testów
-chore: aktualizacja build tools
-```
-
-Przykłady:
+**Testy E2E failują?**
 ```powershell
-git commit -m "feat: add history panel animation"
-git commit -m "fix: calculator button hover effect"
-git commit -m "docs: update CI/CD setup instructions"
+cd e2e
+npx playwright install --with-deps
+npm test
 ```
 
----
-
-## 🎓 Podsumowanie dla prowadzącego
-
-### Automatyczna publikacja ✅
-- Push do `main` → automatyczny build i deploy
-- Działa w GitHub Actions i Azure DevOps
-
-### "Coś" #1: Sass → CSS ✅
-- Transpilacja SCSS do CSS
-- Użycie zmiennych SCSS
-- Zagnieżdżenia stylów
-
-### "Coś" #2: Minifikacja ✅
-- HTML: 3KB → 2KB (33%)
-- CSS: 45KB → 28KB (38%)
-- JS: 22KB → 15KB (32%)
-- **Łącznie: 36% redukcja!**
-
-### Dwa warianty ✅
-1. **GitHub Actions**: [.github/workflows/azure-static-web-apps.yml](.github/workflows/azure-static-web-apps.yml)
-2. **Azure DevOps**: [azure-pipelines.yml](azure-pipelines.yml)
+**API nie odpowiada?**
+- Sprawdź czy backend działa: http://localhost:3000/api/health
+- Sprawdź czy port 3000 nie jest zajęty
 
 ---
 
-## 📚 Dokumentacja
+## 🎓 Lab 3 - Wymagania
 
-- **README.md** - Ogólny przegląd projektu
-- **CI-CD-SETUP.md** - Szczegółowa dokumentacja CI/CD (GŁÓWNA)
-- **QUICK-START.md** - Ten plik (szybki start)
+✅ Rozdzielenie na frontend i backend (REST API)
+✅ Testy jednostkowe backendu (calculator + API)
+✅ Testy jednostkowe frontendu (UI logic)
+✅ Testy E2E (Playwright - pełne przepływy)
+✅ CI/CD z testami (GitHub Actions + Azure DevOps)
 
----
-
-**Sukces!** 🎉 Masz teraz w pełni działający CI/CD!
+**Status: WSZYSTKO GOTOWE! 🎉**
