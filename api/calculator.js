@@ -66,7 +66,8 @@ class Calculator {
   addToHistory(operation, operands, result) {
     this.history.push({
       operation,
-      operands,
+      a: operands[0],
+      b: operands[1] !== undefined ? operands[1] : null,
       result,
       timestamp: new Date().toISOString()
     });
