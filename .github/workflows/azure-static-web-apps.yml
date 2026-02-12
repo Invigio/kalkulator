@@ -15,69 +15,46 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - name: 📥 Checkout Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           submodules: true
           lfs: false
 
-      - name: 🟢 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      - name: 📦 Install Dependencies
-        run: |
-          echo "📦 Instaluję zależności..."
-          npm ci
+      - name: Install Dependencies
+        run: npm ci
 
-      - name: 🎨 Compile Sass to CSS (Krok 1: Sass -> CSS)
-        run: |
-          echo "🎨 Kompilacja SCSS -> CSS..."
-          npm run sass
-          echo "✅ SCSS skompilowane do CSS"
+      - name: Compile Sass to CSS
+        run: npm run sass
 
-      - name: 🗜️ Minify CSS (Krok 2: Minifikacja CSS)
-        run: |
-          echo "🗜️ Minifikacja CSS..."
-          npm run minify:css
-          echo "✅ CSS zminifikowane"
+      - name: Minify CSS
+        run: npm run minify:css
 
-      - name: 🗜️ Minify JavaScript (Krok 2: Minifikacja JS)
-        run: |
-          echo "🗜️ Minifikacja JavaScript..."
-          npm run minify:js
-          echo "✅ JavaScript zminifikowany"
+      - name: Minify JavaScript
+        run: npm run minify:js
 
-      - name: 🗜️ Minify HTML (Krok 2: Minifikacja HTML)
-        run: |
-          echo "🗜️ Minifikacja HTML..."
-          npm run minify:html
-          echo "✅ HTML zminifikowany"
+      - name: Minify HTML
+        run: npm run minify:html
 
-      - name: 📋 Copy Config Files
-        run: |
-          echo "📋 Kopiowanie plików konfiguracyjnych..."
-          npm run copy:config
+      - name: Copy Config Files
+        run: npm run copy:config
 
-      - name: 📊 Build Summary
+      - name: Build Summary
         run: |
-          echo "📊 === PODSUMOWANIE BUILDU ==="
-          echo "Pliki źródłowe (src/):"
+          echo "=== BUILD SUMMARY ==="
+          echo "Source files (src/):"
           ls -lh src/
           echo ""
-          echo "Pliki zbudowane (dist/):"
+          echo "Built files (dist/):"
           ls -lh dist/
-          echo ""
-          echo "Wielkości plików:"
-          echo "CSS Source: $(wc -c < src/styles.scss) bytes"
-          echo "CSS Minified: $(wc -c < dist/styles.min.css) bytes"
-          echo "JS Source: $(wc -c < src/script.js) bytes"
-          echo "JS Minified: $(wc -c < dist/script.min.js) bytes"
-          echo "✅ Build zakończony pomyślnie!"
 
-      - name: 🚀 Deploy to Azure Static Web Apps
+      - name: Deploy to Azure Static Web Apps
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
