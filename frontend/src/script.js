@@ -4,7 +4,7 @@
 
 class CalculatorApp {
   constructor() {
-    this.apiUrl = window.API_URL || 'http://localhost:3000';
+    this.apiUrl = window.API_URL || '';
     this.display = document.getElementById('display');
     this.expression = document.getElementById('expression');
     this.historyList = document.getElementById('history-list');

@@ -1,0 +1,11 @@
+{
+  "name": "calculator-api",
+  "version": "1.0.0",
+  "description": "Calculator REST API - Azure Functions",
+  "scripts": {
+    "start": "func start",
+    "test": "echo \"API tests in backend/\""
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
