@@ -32,9 +32,9 @@ jobs:
           echo "📦 Instaluję zależności..."
           npm ci
 
-      - name: 🎨 Compile Sass to CSS (Krok 1: Sass → CSS)
+      - name: 🎨 Compile Sass to CSS (Krok 1: Sass -> CSS)
         run: |
-          echo "🎨 Kompilacja SCSS → CSS..."
+          echo "🎨 Kompilacja SCSS -> CSS..."
           npm run sass
           echo "✅ SCSS skompilowane do CSS"
 
