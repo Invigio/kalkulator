@@ -1,40 +1,27 @@
 {
-  "name": "kalkulator-cicd",
+  "name": "calculator-lab3",
   "version": "1.0.0",
-  "description": "Zaawansowany kalkulator z CI/CD - Lab 1 Cloud Computing",
-  "main": "dist/index.html",
+  "description": "Calculator with frontend, backend, and comprehensive tests - Lab 3",
   "scripts": {
-    "clean": "rimraf dist",
-    "sass": "sass src/styles.scss dist/styles.css --no-source-map",
-    "minify:css": "cleancss -o dist/styles.min.css dist/styles.css",
-    "minify:js": "terser src/script.js -o dist/script.min.js --compress --mangle",
-    "minify:html": "html-minifier-terser --input-dir src --output-dir dist --file-ext html --collapse-whitespace --remove-comments --minify-css true --minify-js true",
-    "copy:config": "copyfiles -f staticwebapp.config.json README.md dist",
-    "build:sass": "npm run sass && npm run minify:css",
-    "build:js": "npm run minify:js",
-    "build:html": "npm run minify:html",
-    "build": "npm run clean && npm run build:sass && npm run build:js && npm run build:html && npm run copy:config",
-    "prebuild": "echo '🔨 Rozpoczynam budowanie...'",
-    "postbuild": "echo '✅ Build zakończony! Pliki w folderze dist/'",
-    "watch": "sass src/styles.scss dist/styles.css --watch",
-    "serve": "live-server dist"
+    "install:all": "npm run install:backend && npm run install:frontend && npm run install:e2e",
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "install:e2e": "cd e2e && npm install && npx playwright install",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend/dist && npx http-server -p 8080",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "test:e2e": "cd e2e && npm test",
+    "test:all": "npm run test:backend && npm run test:frontend && npm run test:e2e",
+    "build:frontend": "cd frontend && npm run build",
+    "clean": "rimraf backend/node_modules frontend/node_modules e2e/node_modules"
   },
-  "keywords": [
-    "calculator",
-    "azure",
-    "cicd",
-    "sass",
-    "minification"
-  ],
+  "keywords": ["calculator", "azure", "cicd", "tests", "frontend", "backend"],
   "author": "Norbert",
   "license": "MIT",
   "devDependencies": {
-    "sass": "^1.70.0",
-    "clean-css-cli": "^5.6.3",
-    "terser": "^5.27.0",
-    "html-minifier-terser": "^7.2.0",
-    "copyfiles": "^2.4.1",
+    "concurrently": "^8.2.2",
     "rimraf": "^5.0.5",
-    "live-server": "^1.2.2"
+    "http-server": "^14.1.1"
   }
 }

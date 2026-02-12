@@ -1,0 +1,156 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - frontend/*
+      - backend/*
+      - e2e/*
+
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: AzureSecrets
+  - name: nodeVersion
+    value: '20.x'
+
+stages:
+  - stage: Test
+    displayName: 'Test Stage'
+    jobs:
+      - job: BackendTests
+        displayName: 'Backend Unit Tests'
+        steps:
+          - task: NodeTool@0
+            displayName: 'Install Node.js'
+            inputs:
+              versionSpec: $(nodeVersion)
+
+          - script: |
+              cd backend
+              npm ci
+              npm test -- --coverage
+            displayName: 'Run Backend Tests'
+
+          - task: PublishTestResults@2
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: 'backend/coverage/junit.xml'
+              testRunTitle: 'Backend Unit Tests'
+
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              codeCoverageTool: 'Cobertura'
+              summaryFileLocation: 'backend/coverage/cobertura-coverage.xml'
+
+      - job: FrontendTests
+        displayName: 'Frontend Unit Tests'
+        steps:
+          - task: NodeTool@0
+            displayName: 'Install Node.js'
+            inputs:
+              versionSpec: $(nodeVersion)
+
+          - script: |
+              cd frontend
+              npm ci
+              npm test -- --coverage
+            displayName: 'Run Frontend Tests'
+
+          - script: |
+              cd frontend
+              npm run build
+            displayName: 'Build Frontend'
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: 'frontend/dist'
+              ArtifactName: 'frontend-build'
+
+          - task: PublishTestResults@2
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: 'frontend/coverage/junit.xml'
+              testRunTitle: 'Frontend Unit Tests'
+
+      - job: E2ETests
+        displayName: 'E2E Tests'
+        dependsOn: [BackendTests, FrontendTests]
+        steps:
+          - task: NodeTool@0
+            displayName: 'Install Node.js'
+            inputs:
+              versionSpec: $(nodeVersion)
+
+          - script: |
+              cd backend
+              npm ci
+              npm start &
+              sleep 5
+            displayName: 'Start Backend'
+
+          - task: DownloadBuildArtifacts@1
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'frontend-build'
+              downloadPath: '$(System.ArtifactsDirectory)'
+
+          - script: |
+              cd e2e
+              npm ci
+              npx playwright install --with-deps
+              npm test
+            displayName: 'Run E2E Tests'
+
+          - task: PublishTestResults@2
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: 'e2e/test-results/results.xml'
+              testRunTitle: 'E2E Tests'
+
+  - stage: Deploy
+    displayName: 'Deploy Stage'
+    dependsOn: Test
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - deployment: DeployFrontend
+        displayName: 'Deploy Frontend to Azure'
+        environment: 'production'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: DownloadBuildArtifacts@1
+                  inputs:
+                    buildType: 'current'
+                    downloadType: 'single'
+                    artifactName: 'frontend-build'
+                    downloadPath: '$(System.ArtifactsDirectory)'
+
+                - task: AzureStaticWebApp@0
+                  displayName: 'Deploy to Azure Static Web Apps'
+                  inputs:
+                    app_location: '$(System.ArtifactsDirectory)/frontend-build'
+                    skip_app_build: true
+                    azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN)
+
+      - deployment: DeployBackend
+        displayName: 'Deploy Backend to Azure'
+        environment: 'production'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: echo "Backend deployment to Azure App Service"
+                  displayName: 'Deploy Backend'

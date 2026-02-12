@@ -1,0 +1,35 @@
+{
+  "name": "calculator-frontend",
+  "version": "1.0.0",
+  "description": "Calculator frontend",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "build": "npm run clean && npm run build:sass && npm run minify",
+    "clean": "rimraf dist",
+    "build:sass": "sass src/styles.scss dist/styles.css --no-source-map",
+    "minify": "npm run minify:css && npm run minify:js && npm run minify:html",
+    "minify:css": "cleancss -o dist/styles.min.css dist/styles.css",
+    "minify:js": "terser src/script.js -o dist/script.min.js --compress --mangle",
+    "minify:html": "html-minifier-terser --input-dir src --output-dir dist --file-ext html --collapse-whitespace --remove-comments"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "@testing-library/dom": "^9.3.3",
+    "sass": "^1.70.0",
+    "clean-css-cli": "^5.6.3",
+    "terser": "^5.27.0",
+    "html-minifier-terser": "^7.2.0",
+    "rimraf": "^5.0.5"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/**/*.test.js"
+    ]
+  }
+}
