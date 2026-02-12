@@ -19,7 +19,9 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  nodeVersion: '20.x'
+  - group: AzureSecrets
+  - name: nodeVersion
+    value: '20.x'
 
 stages:
   - stage: Build
