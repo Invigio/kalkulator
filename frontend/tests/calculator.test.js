@@ -190,13 +190,16 @@ describe('Frontend Unit Tests', () => {
     });
 
     test('should save theme to localStorage', () => {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorageMock.setItem.mockClear();
       app.toggleTheme();
-      expect(localStorageMock.setItem).toHaveBeenCalledWith('calculator-theme', expect.any(String));
+      expect(localStorageMock.setItem).toHaveBeenCalledWith('calculator-theme', 'dark');
     });
 
     test('should load theme from localStorage', () => {
+      localStorageMock.getItem.mockClear();
       localStorageMock.getItem.mockReturnValue('dark');
-      app.loadTheme();
+      const newApp = new CalculatorApp();
       expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
     });
   });
