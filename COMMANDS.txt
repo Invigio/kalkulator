@@ -1,0 +1,232 @@
+# ===============================================
+# KOMENDY DO KOPIOWANIA - CI/CD Setup
+# ===============================================
+
+# -----------------------------------------------
+# 1. INSTALACJA I BUILD LOKALNY
+# -----------------------------------------------
+
+# Instalacja zależności
+npm install
+
+# Pojedyncze kroki
+npm run sass           # Kompilacja SCSS → CSS
+npm run minify:css     # Minifikacja CSS
+npm run minify:js      # Minifikacja JavaScript
+npm run minify:html    # Minifikacja HTML
+
+# Pełny build
+npm run build
+
+# Watch mode (auto-rebuild podczas edycji)
+npm run watch
+
+# Local server (live preview)
+npm run serve
+
+
+# -----------------------------------------------
+# 2. GIT WORKFLOW - PIERWSZY RAZ
+# -----------------------------------------------
+
+# Inicjalizacja Git
+git init
+
+# Dodanie wszystkich plików
+git add .
+
+# Commit
+git commit -m "feat: initial commit with CI/CD configuration"
+
+# Dodanie remote (ZAMIEŃ na swój URL!)
+git remote add origin https://github.com/YOUR-USERNAME/kalkulator-cicd.git
+
+# Push do GitHub
+git branch -M main
+git push -u origin main
+
+
+# -----------------------------------------------
+# 3. GIT WORKFLOW - KOLEJNE ZMIANY
+# -----------------------------------------------
+
+# Status plików
+git status
+
+# Dodanie zmian
+git add .
+
+# Commit (użyj sensownej wiadomości!)
+git commit -m "feat: add new calculator feature"
+
+# Push
+git push
+
+
+# -----------------------------------------------
+# 4. AZURE DevOps - DODANIE REMOTE
+# -----------------------------------------------
+
+# Dodaj Azure Repos jako dodatkowy remote (ZAMIEŃ na swój URL!)
+git remote add azure https://dev.azure.com/YOUR-ORG/Kalkulator-CICD/_git/kalkulator-cicd
+
+# Push do Azure DevOps
+git push azure main
+
+# Push do obu naraz
+git push origin main && git push azure main
+
+
+# -----------------------------------------------
+# 5. WERYFIKACJA BUILDU
+# -----------------------------------------------
+
+# Sprawdź czy pliki zostały zbudowane
+Test-Path dist/index.html
+Test-Path dist/styles.min.css
+Test-Path dist/script.min.js
+
+# Zobacz rozmiary plików
+Get-ChildItem src/, dist/ | Select-Object Name, @{Name="Size(KB)";Expression={[math]::Round($_.Length/1KB, 2)}}
+
+# Sprawdź zawartość dist/
+Get-ChildItem dist/ -Recurse | Format-Table Name, Length
+
+
+# -----------------------------------------------
+# 6. TEST CI/CD
+# -----------------------------------------------
+
+# Zrób testową zmianę
+echo "/* CI/CD Test $(Get-Date) */" >> src/styles.scss
+
+# Commit i push
+git add .
+git commit -m "test: verify CI/CD pipeline"
+git push
+
+# Sprawdź status w GitHub Actions
+# https://github.com/YOUR-USERNAME/kalkulator-cicd/actions
+
+# Sprawdź status w Azure DevOps
+# https://dev.azure.com/YOUR-ORG/Kalkulator-CICD/_build
+
+
+# -----------------------------------------------
+# 7. CZYSZCZENIE PROJEKTU
+# -----------------------------------------------
+
+# Usuń node_modules i package-lock
+Remove-Item -Recurse -Force node_modules
+Remove-Item package-lock.json
+
+# Usuń folder dist
+Remove-Item -Recurse -Force dist
+
+# Świeża instalacja
+npm install
+
+# Pełny rebuild
+npm run build
+
+
+# -----------------------------------------------
+# 8. TROUBLESHOOTING
+# -----------------------------------------------
+
+# Sprawdź wersję Node.js
+node --version
+
+# Sprawdź wersję npm
+npm --version
+
+# Lista zainstalowanych pakietów
+npm list --depth=0
+
+# Sprawdź czy sass działa
+npm run sass
+
+# Sprawdź logi buildu
+npm run build 2>&1 | Tee-Object -FilePath build.log
+
+
+# -----------------------------------------------
+# 9. GITHUB SECRETS - POWERSHELL
+# -----------------------------------------------
+
+# (Wykonaj ręcznie w przeglądarce):
+# 1. GitHub Repo → Settings → Secrets → Actions
+# 2. New repository secret
+# 3. Name: AZURE_STATIC_WEB_APPS_API_TOKEN
+# 4. Value: <wklej token z Azure Portal>
+# 5. Add secret
+
+
+# -----------------------------------------------
+# 10. AZURE DevOps VARIABLE GROUP - POWERSHELL
+# -----------------------------------------------
+
+# (Wykonaj ręcznie w przeglądarce):
+# 1. Azure DevOps → Pipelines → Library
+# 2. + Variable group
+# 3. Name: Azure-Secrets
+# 4. Add variable:
+#    - Name: AZURE_STATIC_WEB_APPS_API_TOKEN
+#    - Value: <token>
+#    - 🔒 Make secret
+# 5. Save
+
+
+# -----------------------------------------------
+# 11. PRZYDATNE ALIASY (opcjonalne)
+# -----------------------------------------------
+
+# Dodaj do swojego PowerShell profile:
+# notepad $PROFILE
+
+# Wklej:
+function gp { git push }
+function gc { git commit -m $args }
+function ga { git add . }
+function gs { git status }
+function nb { npm run build }
+function ns { npm run serve }
+
+
+# -----------------------------------------------
+# 12. COMPLETE WORKFLOW - COPY ALL
+# -----------------------------------------------
+
+# Pełny workflow od zera:
+
+# 1. Instalacja
+npm install
+
+# 2. Local build & test
+npm run build
+npm run serve
+
+# 3. Git setup
+git init
+git add .
+git commit -m "feat: initial commit"
+git remote add origin https://github.com/YOUR-USERNAME/kalkulator-cicd.git
+git push -u origin main
+
+# 4. Skonfiguruj Azure Static Web App na portal.azure.com
+#    - Copy token
+#    - Add to GitHub Secrets
+
+# 5. Push i sprawdź
+git add .
+git commit -m "test: CI/CD"
+git push
+
+# 6. Zobacz na:
+#    - GitHub: https://github.com/YOUR-USERNAME/kalkulator-cicd/actions
+#    - Azure: https://portal.azure.com
+
+
+# ===============================================
+# GOTOWE! 🎉
+# ===============================================

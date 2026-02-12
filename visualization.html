@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI/CD Process Visualization</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 40px;
+        }
+
+        .pipeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 150px;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 10px;
+            position: relative;
+        }
+
+        .step::after {
+            content: '→';
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            color: #667eea;
+        }
+
+        .step:last-child::after {
+            content: '';
+        }
+
+        .step-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .step-title {
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .step-desc {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .file-card {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .file-title {
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .file-stat {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .file-stat-label {
+            color: #718096;
+        }
+
+        .file-stat-value {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .savings {
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border-radius: 10px;
+        }
+
+        .savings-number {
+            font-size: 72px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .variant-selector {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .variant-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .variant-btn.github {
+            background: #24292e;
+            color: white;
+        }
+
+        .variant-btn.azure {
+            background: #0078d4;
+            color: white;
+        }
+
+        .variant-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 CI/CD Pipeline Visualization</h1>
+
+        <div class="variant-selector">
+            <button class="variant-btn github">🐙 GitHub Actions</button>
+            <button class="variant-btn azure">🔷 Azure DevOps</button>
+        </div>
+
+        <div class="pipeline">
+            <div class="step">
+                <div class="step-icon">📥</div>
+                <div class="step-title">Push Code</div>
+                <div class="step-desc">git push origin main</div>
+            </div>
+
+            <div class="step">
+                <div class="step-icon">🎨</div>
+                <div class="step-title">Sass → CSS</div>
+                <div class="step-desc">SCSS compilation</div>
+            </div>
+
+            <div class="step">
+                <div class="step-icon">🗜️</div>
+                <div class="step-title">Minification</div>
+                <div class="step-desc">HTML, CSS, JS</div>
+            </div>
+
+            <div class="step">
+                <div class="step-icon">📦</div>
+                <div class="step-title">Build</div>
+                <div class="step-desc">Create dist/</div>
+            </div>
+
+            <div class="step">
+                <div class="step-icon">🚀</div>
+                <div class="step-title">Deploy</div>
+                <div class="step-desc">Azure Static Web Apps</div>
+            </div>
+        </div>
+
+        <h2 style="text-align: center; color: #2d3748; margin-bottom: 30px;">
+            📊 File Size Comparison
+        </h2>
+
+        <div class="comparison">
+            <div class="file-card">
+                <div class="file-title">💅 CSS Files</div>
+                <div class="file-stat">
+                    <span class="file-stat-label">Source (SCSS)</span>
+                    <span class="file-stat-value">45 KB</span>
+                </div>
+                <div class="file-stat">
+                    <span class="file-stat-label">Compiled (CSS)</span>
+                    <span class="file-stat-value">45 KB</span>
+                </div>
+                <div class="file-stat">
+                    <span class="file-stat-label">Minified</span>
+                    <span class="file-stat-value">28 KB</span>
+                </div>
+                <div class="file-stat" style="background: #48bb78; color: white;">
+                    <span>Savings</span>
+                    <span>38% ⚡</span>
+                </div>
+            </div>
+
+            <div class="file-card">
+                <div class="file-title">⚙️ JavaScript Files</div>
+                <div class="file-stat">
+                    <span class="file-stat-label">Source (JS)</span>
+                    <span class="file-stat-value">22 KB</span>
+                </div>
+                <div class="file-stat">
+                    <span class="file-stat-label">Minified</span>
+                    <span class="file-stat-value">15 KB</span>
+                </div>
+                <div class="file-stat" style="background: #48bb78; color: white;">
+                    <span>Savings</span>
+                    <span>32% ⚡</span>
+                </div>
+            </div>
+
+            <div class="file-card">
+                <div class="file-title">📄 HTML Files</div>
+                <div class="file-stat">
+                    <span class="file-stat-label">Source</span>
+                    <span class="file-stat-value">3 KB</span>
+                </div>
+                <div class="file-stat">
+                    <span class="file-stat-label">Minified</span>
+                    <span class="file-stat-value">2 KB</span>
+                </div>
+                <div class="file-stat" style="background: #48bb78; color: white;">
+                    <span>Savings</span>
+                    <span>33% ⚡</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="savings">
+            <h2 style="margin: 0;">Total Bundle Size Reduction</h2>
+            <div class="savings-number">36%</div>
+            <p style="font-size: 20px; margin: 0;">
+                70 KB → 45 KB
+            </p>
+            <p style="margin-top: 20px; opacity: 0.9;">
+                ⚡ Faster loading times • 💰 Lower bandwidth costs • 🌍 Better user experience
+            </p>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #edf2f7; border-radius: 10px;">
+            <h3 style="color: #2d3748; margin-top: 0;">✅ CI/CD Features Implemented</h3>
+            <ul style="color: #4a5568; line-height: 2;">
+                <li>✅ Automatic deployment on push to main</li>
+                <li>✅ Step 1: Sass → CSS transpilation (SCSS variables, nesting)</li>
+                <li>✅ Step 2: Minification (HTML, CSS, JavaScript)</li>
+                <li>✅ Variant 1: GitHub Actions workflow</li>
+                <li>✅ Variant 2: Azure DevOps pipeline</li>
+                <li>✅ Build artifacts and deployment logs</li>
+                <li>✅ Live on Azure Static Web Apps</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

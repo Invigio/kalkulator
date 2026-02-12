@@ -1,0 +1,102 @@
+name: Azure Static Web Apps CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+
+jobs:
+  build_and_deploy_job:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Build and Deploy Job
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          lfs: false
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: |
+          echo "📦 Instaluję zależności..."
+          npm ci
+
+      - name: 🎨 Compile Sass to CSS (Krok 1: Sass → CSS)
+        run: |
+          echo "🎨 Kompilacja SCSS → CSS..."
+          npm run sass
+          echo "✅ SCSS skompilowane do CSS"
+
+      - name: 🗜️ Minify CSS (Krok 2: Minifikacja CSS)
+        run: |
+          echo "🗜️ Minifikacja CSS..."
+          npm run minify:css
+          echo "✅ CSS zminifikowane"
+
+      - name: 🗜️ Minify JavaScript (Krok 2: Minifikacja JS)
+        run: |
+          echo "🗜️ Minifikacja JavaScript..."
+          npm run minify:js
+          echo "✅ JavaScript zminifikowany"
+
+      - name: 🗜️ Minify HTML (Krok 2: Minifikacja HTML)
+        run: |
+          echo "🗜️ Minifikacja HTML..."
+          npm run minify:html
+          echo "✅ HTML zminifikowany"
+
+      - name: 📋 Copy Config Files
+        run: |
+          echo "📋 Kopiowanie plików konfiguracyjnych..."
+          npm run copy:config
+
+      - name: 📊 Build Summary
+        run: |
+          echo "📊 === PODSUMOWANIE BUILDU ==="
+          echo "Pliki źródłowe (src/):"
+          ls -lh src/
+          echo ""
+          echo "Pliki zbudowane (dist/):"
+          ls -lh dist/
+          echo ""
+          echo "Wielkości plików:"
+          echo "CSS Source: $(wc -c < src/styles.scss) bytes"
+          echo "CSS Minified: $(wc -c < dist/styles.min.css) bytes"
+          echo "JS Source: $(wc -c < src/script.js) bytes"
+          echo "JS Minified: $(wc -c < dist/script.min.js) bytes"
+          echo "✅ Build zakończony pomyślnie!"
+
+      - name: 🚀 Deploy to Azure Static Web Apps
+        id: builddeploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          app_location: "dist"
+          api_location: ""
+          output_location: ""
+          skip_app_build: true
+
+  close_pull_request_job:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Close Pull Request Job
+    steps:
+      - name: Close Pull Request
+        id: closepullrequest
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: "close"

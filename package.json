@@ -1,0 +1,40 @@
+{
+  "name": "kalkulator-cicd",
+  "version": "1.0.0",
+  "description": "Zaawansowany kalkulator z CI/CD - Lab 1 Cloud Computing",
+  "main": "dist/index.html",
+  "scripts": {
+    "clean": "rimraf dist",
+    "sass": "sass src/styles.scss dist/styles.css --no-source-map",
+    "minify:css": "cleancss -o dist/styles.min.css dist/styles.css",
+    "minify:js": "terser src/script.js -o dist/script.min.js --compress --mangle",
+    "minify:html": "html-minifier-terser --input-dir src --output-dir dist --file-ext html --collapse-whitespace --remove-comments --minify-css true --minify-js true",
+    "copy:config": "copyfiles staticwebapp.config.json .gitignore dist && copyfiles README.md dist",
+    "build:sass": "npm run sass && npm run minify:css",
+    "build:js": "npm run minify:js",
+    "build:html": "npm run minify:html",
+    "build": "npm run clean && npm run build:sass && npm run build:js && npm run build:html && npm run copy:config",
+    "prebuild": "echo '🔨 Rozpoczynam budowanie...'",
+    "postbuild": "echo '✅ Build zakończony! Pliki w folderze dist/'",
+    "watch": "sass src/styles.scss dist/styles.css --watch",
+    "serve": "live-server dist"
+  },
+  "keywords": [
+    "calculator",
+    "azure",
+    "cicd",
+    "sass",
+    "minification"
+  ],
+  "author": "Norbert",
+  "license": "MIT",
+  "devDependencies": {
+    "sass": "^1.70.0",
+    "clean-css-cli": "^5.6.3",
+    "terser": "^5.27.0",
+    "html-minifier-terser": "^7.2.0",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^5.0.5",
+    "live-server": "^1.2.2"
+  }
+}
