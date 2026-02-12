@@ -12,6 +12,12 @@ const localStorageMock = {
   clear: jest.fn()
 };
 global.localStorage = localStorageMock;
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'localStorage', {
+    value: localStorageMock,
+    configurable: true
+  });
+}
 
 // Setup DOM
 document.body.innerHTML = `

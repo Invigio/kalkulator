@@ -2,6 +2,9 @@ const { test, expect } = require('@playwright/test');
 
 test.describe('Calculator E2E Tests', () => {
   test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      window.API_URL = 'http://localhost:3000';
+    });
     await page.goto('/');
     // Wait for calculator to load
     await page.waitForSelector('.calculator');
