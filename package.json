@@ -9,7 +9,7 @@
     "minify:css": "cleancss -o dist/styles.min.css dist/styles.css",
     "minify:js": "terser src/script.js -o dist/script.min.js --compress --mangle",
     "minify:html": "html-minifier-terser --input-dir src --output-dir dist --file-ext html --collapse-whitespace --remove-comments --minify-css true --minify-js true",
-    "copy:config": "copyfiles staticwebapp.config.json .gitignore dist && copyfiles README.md dist",
+    "copy:config": "copyfiles -f staticwebapp.config.json README.md dist",
     "build:sass": "npm run sass && npm run minify:css",
     "build:js": "npm run minify:js",
     "build:html": "npm run minify:html",
