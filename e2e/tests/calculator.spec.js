@@ -5,6 +5,9 @@ test.describe('Calculator E2E Tests', () => {
     await page.goto('/');
     // Wait for calculator to load
     await page.waitForSelector('.calculator');
+    // Ensure a clean UI state between tests
+    await page.click('[data-action="clear"]');
+    await page.click('#clear-history');
   });
 
   test.describe('Basic UI', () => {

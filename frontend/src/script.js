@@ -134,6 +134,7 @@ class CalculatorApp {
           await this.calculate(this.operation, this.previousValue, current);
           this.operation = null;
           this.previousValue = null;
+          this.updateExpression();
         }
         break;
     }
@@ -323,7 +324,9 @@ class CalculatorApp {
     localStorage.setItem('calculator-theme', newTheme);
 
     const themeBtn = document.getElementById('theme-toggle');
-    themeBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    if (themeBtn) {
+      themeBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    }
   }
 
   /**
